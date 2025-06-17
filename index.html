@@ -213,15 +213,106 @@
             display: inline-block;
             margin-top: 10px;
             padding: 10px 15px;
-            background-color: #00bcd4;
-            color: black;
+            background: linear-gradient(45deg, #00bcd4, #00e5ff);
+            color: #000;
             text-decoration: none;
             border-radius: 5px;
             font-size: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+            overflow: hidden;
         }
 
         .game-card a:hover {
-            background-color: #0097a7;
+            background: linear-gradient(45deg, #00e5ff, #00bcd4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.4);
+        }
+
+        .game-card a:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 229, 255, 0.3);
+        }
+
+        .game-card a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .game-card a:hover::before {
+            left: 100%;
+        }
+
+        .game-card a.loading {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            pointer-events: none;
+            padding-right: 35px;
+            box-shadow: 0 0 15px rgba(44, 62, 80, 0.4);
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            animation: textPulse 1.5s infinite;
+        }
+
+        @keyframes textPulse {
+            0% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+            100% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .game-card a.loading::after {
+            content: "";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes spin {
+            to {
+                transform: translateY(-50%) rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+            }
+        }
+
+        .game-card a:not(.loading) {
+            animation: pulse 2s infinite;
         }
 
         .pagination {
@@ -486,7 +577,7 @@
           <div class="info">
             <h3>${game.name}</h3>
             <p>Downloads: ${game.downloaded}</p>
-            <a href="${game.downloadLink}" target="_blank">Download</a>
+            <a href="${game.downloadLink}" target="_blank" onclick="handleDownload(event, this)">Download</a>
           </div>
         `;
         container.appendChild(card);
@@ -535,6 +626,25 @@
       pageInfo.className = 'page-info';
       pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
       pagination.appendChild(pageInfo);
+    }
+
+    function handleDownload(event, button) {
+      event.preventDefault();
+      const link = button.getAttribute('href');
+      
+      // Add loading state
+      button.classList.add('loading');
+      button.textContent = 'Downloading...';
+      
+      // Simulate download delay (you can remove this in production)
+      setTimeout(() => {
+        // Remove loading state
+        button.classList.remove('loading');
+        button.textContent = 'Download';
+        
+        // Open download link
+        window.open(link, '_blank');
+      }, 1500);
     }
   </script>
 
