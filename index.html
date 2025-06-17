@@ -636,15 +636,19 @@
       button.classList.add('loading');
       button.textContent = 'Downloading...';
       
-      // Simulate download delay (you can remove this in production)
+      // Create a temporary link element
+      const tempLink = document.createElement('a');
+      tempLink.href = link;
+      tempLink.target = '_blank';
+      
+      // Start download immediately
+      tempLink.click();
+      
+      // Remove loading state after 2 seconds (you can adjust this time)
       setTimeout(() => {
-        // Remove loading state
         button.classList.remove('loading');
         button.textContent = 'Download';
-        
-        // Open download link
-        window.open(link, '_blank');
-      }, 1500);
+      }, 2000);
     }
   </script>
 
